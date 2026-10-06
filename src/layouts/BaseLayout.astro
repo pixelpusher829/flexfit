@@ -1,0 +1,108 @@
+---
+import "../styles/global.css";
+import { getImage } from "astro:assets";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import ogSource from "../images/header-banner.jpg";
+import { business, phoneHref } from "../data/site";
+import { withBase } from "../lib/url";
+
+interface Props {
+	title?: string;
+	description?: string;
+	noindex?: boolean;
+}
+
+const { title, description = business.description, noindex = false } = Astro.props;
+const pageTitle = title ? `${title} | ${business.name}` : `${business.name} | ${business.tagline}`;
+const canonical = new URL(Astro.url.pathname.replace(/\/?$/, "/"), Astro.site);
+const ogImage = await getImage({ src: ogSource, width: 1200, height: 630, fit: "cover", format: "jpg" });
+const ogImageUrl = new URL(ogImage.src, Astro.site);
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "HealthClub",
+	name: business.name,
+	description: business.description,
+	url: new URL(withBase("/"), Astro.site).href,
+	image: ogImageUrl.href,
+	telephone: phoneHref.replace("tel:", ""),
+	email: business.email,
+	address: {
+		"@type": "PostalAddress",
+		streetAddress: business.address.street,
+		addressLocality: business.address.city,
+		addressRegion: business.address.region,
+		postalCode: business.address.postalCode,
+		addressCountry: business.address.country,
+	},
+	openingHours: business.hours.map((h) => h.schema),
+	sameAs: business.social.map((s) => s.href),
+};
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{pageTitle}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		{noindex && <meta name="robots" content="noindex" />}
+		<meta name="theme-color" content="#2a2c41" />
+		<link rel="icon" href={withBase("/favicon.ico")} sizes="any" />
+		<link rel="sitemap" href={withBase("/sitemap-index.xml")} />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={business.name} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Lato:wght@400;700&display=swap"
+			rel="stylesheet"
+		/>
+		<meta name="generator" content={Astro.generator} />
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+		<script is:inline>
+			document.documentElement.classList.add("js");
+		</script>
+		<slot name="head" />
+	</head>
+	<body>
+		<a class="skip-link" href="#main">Skip to content</a>
+		<Header />
+		<main id="main">
+			<slot />
+		</main>
+		<Footer />
+		<script>
+			// Reveal-on-scroll; content is fully visible without JS or with reduced motion.
+			const items = document.querySelectorAll("[data-reveal]");
+			if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+				const observer = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (entry.isIntersecting) {
+								entry.target.classList.add("is-visible");
+								observer.unobserve(entry.target);
+							}
+						}
+					},
+					{ rootMargin: "0px 0px -10% 0px" },
+				);
+				items.forEach((el) => observer.observe(el));
+			} else {
+				items.forEach((el) => el.classList.add("is-visible"));
+			}
+		</script>
+	</body>
+</html>

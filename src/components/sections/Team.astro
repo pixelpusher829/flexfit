@@ -1,0 +1,31 @@
+---
+import { Image } from "astro:assets";
+import { team } from "../../data/site";
+---
+
+<section class="section" id="team" aria-labelledby="team-title">
+	<div class="container">
+		<header class="section-head" data-reveal>
+			<p class="eyebrow">Our coaches</p>
+			<h2 id="team-title">Meet the team</h2>
+			<p>Certified, experienced and genuinely invested in your progress.</p>
+		</header>
+		<ul class="team-grid">
+			{
+				team.map((m) => (
+					<li class="member" data-reveal>
+						<Image src={m.image} alt={m.alt} widths={[360, 540, 720]} sizes="(min-width: 960px) 30vw, (min-width: 640px) 45vw, 100vw" />
+						<h3>{m.name}</h3>
+						<p class="member-role">{m.role}</p>
+						<p>{m.bio}</p>
+						<ul class="tags" aria-label="Certifications">
+							{m.credentials.map((c) => (
+								<li>{c}</li>
+							))}
+						</ul>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>

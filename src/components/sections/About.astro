@@ -1,0 +1,41 @@
+---
+import { Image } from "astro:assets";
+import Icon from "../Icon.astro";
+import about from "../../images/about.jpg";
+import { values } from "../../data/site";
+---
+
+<section class="section" id="about" aria-labelledby="about-title">
+	<div class="container about-grid">
+		<div class="about-media" data-reveal>
+			<Image src={about} alt="A woman holding a standing yoga pose on a desert cliff edge" widths={[400, 600, 900]} sizes="(min-width: 960px) 40vw, 100vw" />
+		</div>
+		<div class="about-copy" data-reveal>
+			<p class="eyebrow">About FlexFit</p>
+			<h2 id="about-title">Fitness that fits your life</h2>
+			<p class="lead">
+				We started FlexFit because we believed the gym should feel like the best part of your day, not a chore. Our mission is simple: help real
+				people get stronger, healthier and more confident through expert coaching and a supportive community.
+			</p>
+			<p>
+				Whether you're picking up a barbell for the first time, coming back from an injury or chasing a new personal best, our coaches meet you
+				where you are and build a plan around you.
+			</p>
+			<ul class="values">
+				{
+					values.map((v) => (
+						<li>
+							<span class="value-icon">
+								<Icon name={v.icon} size={22} />
+							</span>
+							<div>
+								<h3>{v.title}</h3>
+								<p>{v.text}</p>
+							</div>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</div>
+</section>

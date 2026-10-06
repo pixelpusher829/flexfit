@@ -1,0 +1,153 @@
+---
+import Icon from "../Icon.astro";
+import { business, fullAddress, interests, mapsHref, phoneHref } from "../../data/site";
+import { withBase } from "../../lib/url";
+
+const endpoint = business.formEndpoint;
+---
+
+<section class="section section-tint" id="contact" aria-labelledby="contact-title">
+	<div class="container contact-grid">
+		<div class="contact-info" data-reveal>
+			<p class="eyebrow">Get in touch</p>
+			<h2 id="contact-title">Book your free intro session</h2>
+			<p class="lead">Tell us a little about yourself and what you'd like to achieve. A coach will reach out within one business day to set up a time.</p>
+			<ul class="contact-list">
+				<li>
+					<span class="value-icon"><Icon name="phone" /></span>
+					<div><strong>Call or text</strong><a href={phoneHref}>{business.phone}</a></div>
+				</li>
+				<li>
+					<span class="value-icon"><Icon name="mail" /></span>
+					<div><strong>Email</strong><a href={`mailto:${business.email}`}>{business.email}</a></div>
+				</li>
+				<li>
+					<span class="value-icon"><Icon name="pin" /></span>
+					<div>
+						<strong>Visit</strong>
+						<a href={mapsHref} target="_blank" rel="noopener noreferrer">{fullAddress}</a>
+					</div>
+				</li>
+				<li>
+					<span class="value-icon"><Icon name="clock" /></span>
+					<div>
+						<strong>Hours</strong>
+						{
+							business.hours.map((h) => (
+								<span>
+									{h.days}: {h.time}
+								</span>
+							))
+						}
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<form
+			class="card contact-form"
+			data-reveal
+			data-contact-form
+			data-endpoint={endpoint}
+			data-email={business.email}
+			action={endpoint || `mailto:${business.email}`}
+			method="POST"
+			enctype={endpoint ? undefined : "text/plain"}
+		>
+			<div class="field-row">
+				<div class="field">
+					<label for="cf-name">Name</label>
+					<input id="cf-name" name="name" type="text" autocomplete="name" required />
+				</div>
+				<div class="field">
+					<label for="cf-email">Email</label>
+					<input id="cf-email" name="email" type="email" autocomplete="email" required />
+				</div>
+			</div>
+			<div class="field-row">
+				<div class="field">
+					<label for="cf-phone">Phone <span class="optional">(optional)</span></label>
+					<input id="cf-phone" name="phone" type="tel" autocomplete="tel" />
+				</div>
+				<div class="field">
+					<label for="cf-interest">I'm interested in</label>
+					<select id="cf-interest" name="interest">
+						{interests.map((i) => <option>{i}</option>)}
+					</select>
+				</div>
+			</div>
+			<div class="field">
+				<label for="cf-message">Your goals <span class="optional">(optional)</span></label>
+				<textarea id="cf-message" name="message" rows="4" placeholder="E.g. I want to get stronger, lose 10 lbs and fix my posture."></textarea>
+			</div>
+			<!-- Honeypot: hidden from people, filled in by bots -->
+			<div class="hp" aria-hidden="true">
+				<label for="cf-company">Company</label>
+				<input id="cf-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+			</div>
+			<button type="submit" class="button button-block">Send message <Icon name="arrow" size={18} /></button>
+			<p class="form-status" role="status" aria-live="polite" data-form-status></p>
+			<p class="form-note">
+				We'll only use your details to respond to your enquiry. See our <a href={withBase("/privacy/")}>privacy policy</a>.
+			</p>
+		</form>
+	</div>
+</section>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>("[data-contact-form]")!;
+	const status = form.querySelector<HTMLElement>("[data-form-status]")!;
+	const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+	const interest = form.querySelector<HTMLSelectElement>("#cf-interest")!;
+
+	// Buttons elsewhere on the page (e.g. pricing) pre-select what the visitor is interested in.
+	document.addEventListener("click", (e) => {
+		const trigger = (e.target as HTMLElement).closest<HTMLElement>("[data-interest]");
+		if (!trigger) return;
+		const value = trigger.dataset.interest!;
+		const option = Array.from(interest.options).find((o) => value.includes(o.value) || o.value.includes(value));
+		if (option) {
+			interest.value = option.value;
+		} else {
+			const extra = new Option(value, value, true, true);
+			interest.add(extra, 0);
+		}
+	});
+
+	const setStatus = (message: string, kind: "success" | "error" | "") => {
+		status.textContent = message;
+		status.dataset.kind = kind;
+	};
+
+	form.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
+		if (data._gotcha) return;
+		delete data._gotcha;
+
+		const endpoint = form.dataset.endpoint;
+		if (!endpoint) {
+			const body = `Name: ${data.name}\nEmail: ${data.email}\nPhone: ${data.phone || "-"}\nInterested in: ${data.interest}\n\n${data.message || ""}`;
+			window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(`Enquiry: ${data.interest}`)}&body=${encodeURIComponent(body)}`;
+			setStatus("Your email app should open with your message ready to send.", "success");
+			return;
+		}
+
+		button.disabled = true;
+		setStatus("Sending…", "");
+		try {
+			const res = await fetch(endpoint, {
+				method: "POST",
+				headers: { "Content-Type": "application/json", Accept: "application/json" },
+				body: JSON.stringify(data),
+			});
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			form.reset();
+			setStatus("Thanks! We've got your message and a coach will be in touch within one business day.", "success");
+		} catch {
+			setStatus(`Sorry, something went wrong. Please try again or email us at ${form.dataset.email}.`, "error");
+		} finally {
+			button.disabled = false;
+		}
+	});
+</script>

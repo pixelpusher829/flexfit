@@ -1,0 +1,25 @@
+---
+import { steps } from "../../data/site";
+---
+
+<section class="section section-dark" id="how-it-works" aria-labelledby="process-title">
+	<div class="container">
+		<header class="section-head" data-reveal>
+			<p class="eyebrow eyebrow-light">How it works</p>
+			<h2 id="process-title">From first visit to first PR</h2>
+		</header>
+		<ol class="steps">
+			{
+				steps.map((s, i) => (
+					<li data-reveal>
+						<span class="step-num" aria-hidden="true">
+							{String(i + 1).padStart(2, "0")}
+						</span>
+						<h3>{s.title}</h3>
+						<p>{s.text}</p>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>

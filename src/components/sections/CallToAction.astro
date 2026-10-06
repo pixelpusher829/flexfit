@@ -1,0 +1,14 @@
+---
+import { Image } from "astro:assets";
+import Icon from "../Icon.astro";
+import banner from "../../images/cta-banner.jpg";
+---
+
+<section class="cta" aria-labelledby="cta-title">
+	<Image src={banner} alt="" class="cta-bg" widths={[640, 960, 1200]} sizes="100vw" />
+	<div class="container cta-content" data-reveal>
+		<h2 id="cta-title">Your first session is on us</h2>
+		<p>Meet a coach, get a free movement assessment and walk away with a plan. No commitment required.</p>
+		<a href="#contact" class="button" data-interest="Free intro session">Claim your free session <Icon name="arrow" size={18} /></a>
+	</div>
+</section>

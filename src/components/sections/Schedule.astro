@@ -1,0 +1,41 @@
+---
+import { schedule } from "../../data/site";
+---
+
+<section class="section" id="schedule" aria-labelledby="schedule-title">
+	<div class="container">
+		<header class="section-head" data-reveal>
+			<p class="eyebrow">Class schedule</p>
+			<h2 id="schedule-title">Find a class that fits your week</h2>
+			<p>Drop-ins welcome. Members can reserve a spot in the app up to 7 days ahead.</p>
+		</header>
+		<div class="schedule" data-reveal>
+			{
+				schedule.map((d) => (
+					<section class="schedule-day" aria-label={d.day} data-day={d.day}>
+						<h3>{d.day}</h3>
+						<ul>
+							{d.classes.map((c) => (
+								<li>
+									<time>{c.time}</time>
+									<span class="class-name">{c.name}</span>
+									<span class="class-coach">with {c.coach}</span>
+								</li>
+							))}
+						</ul>
+					</section>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<script>
+	// Highlight today's classes.
+	const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
+	const row = document.querySelector<HTMLElement>(`.schedule-day[data-day="${today}"]`);
+	if (row) {
+		row.classList.add("is-today");
+		row.setAttribute("aria-current", "date");
+	}
+</script>

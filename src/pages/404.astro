@@ -1,0 +1,18 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../lib/url";
+---
+
+<BaseLayout title="Page not found" noindex>
+	<section class="section page-simple">
+		<div class="container narrow">
+			<p class="eyebrow">404</p>
+			<h1>This page skipped leg day.</h1>
+			<p class="lead">We couldn't find the page you were looking for. It may have moved or no longer exists.</p>
+			<div class="hero-actions">
+				<a href={withBase("/")} class="button">Back to home</a>
+				<a href={withBase("/#contact")} class="button button-outline">Contact us</a>
+			</div>
+		</div>
+	</section>
+</BaseLayout>

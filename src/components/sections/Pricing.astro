@@ -1,0 +1,41 @@
+---
+import Icon from "../Icon.astro";
+import { plans } from "../../data/site";
+---
+
+<section class="section section-tint" id="pricing" aria-labelledby="pricing-title">
+	<div class="container">
+		<header class="section-head" data-reveal>
+			<p class="eyebrow">Memberships</p>
+			<h2 id="pricing-title">Simple pricing. No contracts.</h2>
+			<p>Month-to-month, pause anytime. Every plan starts with a free intro session.</p>
+		</header>
+		<ul class="plans">
+			{
+				plans.map((plan) => (
+					<li class:list={["card", "plan", { "plan-featured": plan.featured }]} data-reveal>
+						{plan.featured && <p class="plan-badge">Most popular</p>}
+						<h3>{plan.name}</h3>
+						<p class="plan-price">
+							<span class="amount">${plan.price}</span>
+							<span class="period">/ {plan.period}</span>
+						</p>
+						<p class="plan-desc">{plan.description}</p>
+						<ul class="checklist">
+							{plan.features.map((f) => (
+								<li>
+									<Icon name="check" size={18} />
+									{f}
+								</li>
+							))}
+						</ul>
+						<a href="#contact" class:list={["button", { "button-outline": !plan.featured }]} data-interest={plan.name}>
+							Get started
+						</a>
+					</li>
+				))
+			}
+		</ul>
+		<p class="fine-print">Prices in CAD, plus applicable taxes. Drop-in classes $25. Student and family discounts available. Just ask.</p>
+	</div>
+</section>

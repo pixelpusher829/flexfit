@@ -1,0 +1,60 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import logo from "../images/logo.png";
+import { business, nav } from "../data/site";
+import { withBase } from "../lib/url";
+---
+
+<header class="site-header" data-header>
+	<div class="container header-inner">
+		<a href={withBase("/")} class="brand" aria-label={`${business.name} home`}>
+			<Image src={logo} alt="" height={40} width={Math.round((40 * logo.width) / logo.height)} loading="eager" />
+		</a>
+		<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-menu-toggle>
+			<span class="sr-only">Menu</span>
+			<Icon name="menu" size={26} class="icon-open" />
+			<Icon name="x" size={26} class="icon-close" />
+		</button>
+		<nav id="site-nav" class="site-nav" aria-label="Main">
+			<ul>
+				{
+					nav.map((item) => (
+						<li>
+							<a href={withBase(`/${item.href}`)}>{item.label}</a>
+						</li>
+					))
+				}
+			</ul>
+			<a href={withBase("/#contact")} class="button button-small">Book now</a>
+		</nav>
+	</div>
+</header>
+
+<script>
+	const header = document.querySelector<HTMLElement>("[data-header]")!;
+	const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]")!;
+	const nav = document.getElementById("site-nav")!;
+
+	const setOpen = (open: boolean) => {
+		toggle.setAttribute("aria-expanded", String(open));
+		header.classList.toggle("menu-open", open);
+		document.body.classList.toggle("no-scroll", open);
+	};
+
+	toggle.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
+	nav.addEventListener("click", (e) => {
+		if ((e.target as HTMLElement).closest("a")) setOpen(false);
+	});
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape" && header.classList.contains("menu-open")) {
+			setOpen(false);
+			toggle.focus();
+		}
+	});
+	window.matchMedia("(min-width: 960px)").addEventListener("change", () => setOpen(false));
+
+	const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 8);
+	onScroll();
+	window.addEventListener("scroll", onScroll, { passive: true });
+</script>

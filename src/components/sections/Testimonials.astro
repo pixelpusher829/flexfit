@@ -1,0 +1,35 @@
+---
+import Icon from "../Icon.astro";
+import { testimonials } from "../../data/site";
+---
+
+<section class="section section-tint" id="reviews" aria-labelledby="reviews-title">
+	<div class="container">
+		<header class="section-head" data-reveal>
+			<p class="eyebrow">Member stories</p>
+			<h2 id="reviews-title">Real people, real results</h2>
+		</header>
+		<ul class="testimonials">
+			{
+				testimonials.map((t) => (
+					<li class="card testimonial" data-reveal>
+						<figure>
+							<div class="stars" role="img" aria-label="5 out of 5 stars">
+								{Array.from({ length: 5 }, () => (
+									<Icon name="star" size={18} />
+								))}
+							</div>
+							<blockquote>
+								<p>“{t.quote}”</p>
+							</blockquote>
+							<figcaption>
+								<strong>{t.name}</strong>
+								<span>{t.detail}</span>
+							</figcaption>
+						</figure>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>

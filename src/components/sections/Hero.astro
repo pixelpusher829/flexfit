@@ -1,0 +1,46 @@
+---
+import { Image } from "astro:assets";
+import Icon from "../Icon.astro";
+import banner from "../../images/header-banner.jpg";
+import { stats } from "../../data/site";
+---
+
+<section class="hero" id="home" aria-labelledby="hero-title">
+	<Image
+		src={banner}
+		alt=""
+		class="hero-bg"
+		widths={[640, 960, 1200]}
+		sizes="100vw"
+		loading="eager"
+		fetchpriority="high"
+	/>
+	<div class="container hero-content">
+		<p class="eyebrow eyebrow-light hero-eyebrow">
+			<span>Personal training</span> <span>Group classes</span> <span>Nutrition</span>
+		</p>
+		<h1 id="hero-title">Stronger starts here.</h1>
+		<p class="hero-lead">
+			Expert coaching, energizing classes and a community that shows up for you. Whatever your starting point, we'll build the plan that gets you
+			there.
+		</p>
+		<div class="hero-actions">
+			<a href="#contact" class="button" data-interest="Free intro session">
+				Book your free session <Icon name="arrow" size={18} />
+			</a>
+			<a href="#pricing" class="button button-ghost">View memberships</a>
+		</div>
+	</div>
+	<div class="container">
+		<dl class="stats">
+			{
+				stats.map((s) => (
+					<div>
+						<dt>{s.label}</dt>
+						<dd>{s.value}</dd>
+					</div>
+				))
+			}
+		</dl>
+	</div>
+</section>

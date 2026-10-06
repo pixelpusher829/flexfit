@@ -1,0 +1,38 @@
+---
+import Icon from "../Icon.astro";
+import { faqs } from "../../data/site";
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "FAQPage",
+	mainEntity: faqs.map((f) => ({
+		"@type": "Question",
+		name: f.q,
+		acceptedAnswer: { "@type": "Answer", text: f.a },
+	})),
+};
+---
+
+<section class="section" id="faq" aria-labelledby="faq-title">
+	<div class="container faq-grid">
+		<header class="section-head section-head-left" data-reveal>
+			<p class="eyebrow">FAQ</p>
+			<h2 id="faq-title">Questions? We've got answers.</h2>
+			<p>Can't find what you're looking for? <a href="#contact">Send us a message</a> and we'll get back to you within one business day.</p>
+		</header>
+		<div class="faq-list" data-reveal>
+			{
+				faqs.map((f) => (
+					<details>
+						<summary>
+							{f.q}
+							<Icon name="chevron" size={20} />
+						</summary>
+						<p>{f.a}</p>
+					</details>
+				))
+			}
+		</div>
+	</div>
+	<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</section>

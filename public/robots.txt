@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pixelpusher829.github.io/flexfit/sitemap-index.xml

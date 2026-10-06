@@ -1,0 +1,60 @@
+---
+// TEMPLATE: have the client review this policy (ideally with legal advice) before launch.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { business, fullAddress } from "../data/site";
+
+const updated = "October 5, 2026";
+---
+
+<BaseLayout title="Privacy Policy" description={`How ${business.name} collects, uses and protects your personal information.`}>
+	<section class="section page-simple">
+		<div class="container narrow prose">
+			<p class="eyebrow">Legal</p>
+			<h1>Privacy Policy</h1>
+			<p><em>Last updated: {updated}</em></p>
+
+			<p>
+				{business.name} ("we", "us") respects your privacy. This policy explains what personal information we collect through this website, how we use
+				it, and the choices you have.
+			</p>
+
+			<h2>Information we collect</h2>
+			<p>
+				When you submit our contact form we collect the details you provide: your name, email address, phone number (if given), the service
+				you're interested in and any message you include. We do not use advertising trackers on this website.
+			</p>
+
+			<h2>How we use it</h2>
+			<ul>
+				<li>To respond to your enquiry and schedule your intro session.</li>
+				<li>To provide services you sign up for.</li>
+				<li>To meet our legal and accounting obligations.</li>
+			</ul>
+			<p>We never sell your personal information or share it with third parties for their own marketing.</p>
+
+			<h2>Service providers</h2>
+			<p>
+				Form submissions are delivered to us through a third-party form processing service, and this site is hosted by a third-party web host.
+				These providers process data only on our behalf and under appropriate safeguards.
+			</p>
+
+			<h2>How long we keep it</h2>
+			<p>
+				We keep enquiry information for up to 24 months unless you become a member, in which case it is kept for as long as your membership is
+				active and as required by law afterwards.
+			</p>
+
+			<h2>Your rights</h2>
+			<p>
+				You can ask to access, correct or delete the personal information we hold about you, or withdraw your consent at any time, by emailing
+				<a href={`mailto:${business.email}`}>{business.email}</a>.
+			</p>
+
+			<h2>Contact</h2>
+			<p>
+				Questions about this policy can be sent to <a href={`mailto:${business.email}`}>{business.email}</a> or by mail to {business.name},
+				{fullAddress}.
+			</p>
+		</div>
+	</section>
+</BaseLayout>
